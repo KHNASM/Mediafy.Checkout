@@ -1,0 +1,18 @@
+﻿@page "order-confirmation"
+@model Checkout.Pages.OrderConfirmationModel
+@{
+    ViewData["Title"] = Model.OrderResult.Success ? "Thank You" : "Error";
+    string className = Model.OrderResult.Success ? null : "text-danger";
+}
+
+
+<div clas="card">
+
+    <div class="@className">
+        @Model.OrderResult.Message
+    </div>
+
+    <div class="mt-5">
+        <a asp-area="" asp-page="/Index"  class="btn btn-primary">Go to Home</a>
+    </div>
+</div>

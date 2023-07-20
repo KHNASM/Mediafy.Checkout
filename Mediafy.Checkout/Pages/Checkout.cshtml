@@ -1,0 +1,69 @@
+﻿@page "{offerId:int}"
+
+@model Checkout.Pages.CheckoutModel
+
+<header>
+    <h1>Provide your information:</h1>
+</header>
+
+<form asp-action="Checkout">
+    <input asp-for="OrderRequest.OfferId" type="hidden" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-6">
+                    <label asp-for="OrderRequest.Country"></label>
+                    <select asp-for="OrderRequest.Country" asp-items="@Model.SelectableCountries" class="form-control"></select>
+                    <span asp-validation-for="OrderRequest.Country" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderRequest.Email"></label>
+                <input asp-for="OrderRequest.Email" type="email" class="form-control" />
+                <span asp-validation-for="OrderRequest.Email" class="text-danger"></span>
+            </div>
+            <div class="row form-group">
+                <div class="col">
+                    <label asp-for="OrderRequest.FirstName"></label>
+                    <input asp-for="OrderRequest.FirstName" type="text" class="form-control" />
+                    <span asp-validation-for="OrderRequest.FirstName" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="OrderRequest.LastName"></label>
+                    <input asp-for="OrderRequest.LastName" type="text" class="form-control" />
+                    <span asp-validation-for="OrderRequest.LastName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderRequest.Address"></label>
+                <input asp-for="OrderRequest.Address" type="text" class="form-control" />
+                <span asp-validation-for="OrderRequest.Address" class="text-danger"></span>
+            </div>
+            <div class="row form-group">
+                <div class="col">
+                    <label asp-for="OrderRequest.ZipCode"></label>
+                    <input asp-for="OrderRequest.ZipCode" type="text" class="form-control" />
+                    <span asp-validation-for="OrderRequest.ZipCode" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    @if (Model.IsPhoneNumberRequired)
+                    {
+                        <label asp-for="OrderRequest.Telephone"></label>
+                        <input asp-for="OrderRequest.Telephone" type="text" class="form-control" />
+                        <span asp-validation-for="OrderRequest.Telephone" class="text-danger"></span>
+                    }
+                </div>
+            </div> <br />
+            <button type="submit" class="btn btn-primary">Place order</button>
+        </div>
+        <div class="col-md-6">
+            <img src="@Model.CheckoutDto.ImageUrl" />
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

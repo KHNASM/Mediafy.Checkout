@@ -1,0 +1,22 @@
+﻿@page
+@model Checkout.Pages.IndexModel
+
+
+<div class="row mb-2">
+    @foreach (var offer in Model.Offers)
+    {
+        <div class="col-md-4">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-3 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">@offer.Product.Name</h3>
+                    <strong class="d-inline-block mb-2">@offer.Name</strong>
+                    <p class="card-text mb-auto">@offer.Product.Description</p>
+                    <a href="@Url.Page("Checkout", new { offerId = offer.Id })" class="text-decoration-none">Buy now</a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="@offer.Product.ImageUrl" style="max-height: 200px" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
