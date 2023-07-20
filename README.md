@@ -1,25 +1,26 @@
-This is a proof of concept of a checkout application that is expected to go live soon, developed by one of our interns. 
+Layered Desing:
+The application has been split into multiple dotnet assemblies, each of which represents a layer. This is to facilitate any future changes or reuse. For example, in order for the application functionalities to be reused from Android client, all what is needed is to add a thin API (REST, PRC, gRPC or whatever) endpoint layer that can communicate with the existing business layer. Such API layer will be very lean as all it would need to do is to delegate the requests to the business layer. Another example is that since the domain layer is completely unaware of persistence technology, only by replacing/modifying the data access layer the persistence technology can be switched. In summary, application has been split in to loosely coupled layers with clear separation of concerns in mind in order to facilitate any future changes, reusability, maintainability, and growth. 
 
-Before launch, there is some feedback from the business side regarding the user input during checkout that needs our attention:
- - Don't always let customers choose country. Offers can generally only be ordered and delivered to contry defined on the Offer. Only exception is the Swedish offer that can be purchased to both Sweden and Finland. 
- - The field Zip Code should be four digits for orders to Norway, five digits for orders to Sweden and Finland.
- - All fields are required, except Norwegian orders that do not require the field Telephone. Please hide this field for Norwegian offers.
+In-memory data stored replaced with persisted data stored:
+So that the data context can be injected into the data consumer components, data store has been changed from in-memory to persisted one in order to remove the limitation of single open connection. This allowed for the dependencies to be injected with a per-request scoped lifetime basis, the very natural choice for the HTTP stateless model. 
 
- 
+Third-party API calls moved from client to the server:
+The client-side JavaScript API calls have been moved to the server. The client-side API calls is a bad idea in my opinion for it would reveal the API endpoint to everyone, so:
+If the API is an unauthenticated public API, this opens up the opportunities for a malicious user of, for example, denial-of-service attack.
+In case of authenticated API, this would reveal the API secrets (security tokens, secret keys or passwords etc).
+Although situation is much better compared to the past, vanilla JavaScript can still exhibit browser compatibilities issues on times. 
 
-Assignment: 
- - This project needs to launch within a few days. How should we implement the new business requirements in time, and what code improvements can we manage to include before launch?
- - The project does not follow our normal standards, and we would like to evolve this solution with the goal to be able to reuse the data access and business logic from other clients such as our Android app or an external plugin such as a Mailchimp app. How would we achieve this efficiently?
- - Please review and note down other suggestions of improvements to this project, for example providing more clear separation of concerns, making the code less error prone or improving its readability.
- - Use git and implement the business logic and and some of your suggestions to show how you write code and what you consider important to fix first.
- - Be prepared to discuss details about why you suggest each change, and why you choose some suggestions before others.
+Configurable API Endpoint:
+The third-party API endpoints have been made configurable. This removed the strong dependency on the endpoint URLs. In case an endpoint switches the URI, our application can be reconfigured to work with the new URI without the need for the redeployment.
 
+Configurable Input Validation Rules:
+The user input validation rules have been made configurable, so validation rules can be changed without the need for the redeployment.
 
- Remarks: 
- - The DataContext is an in memory database, but contains a small set of real world data. Please treat it as our real database for now, we'll switch it to our real database before going live. 
- - The external API that receives orders is out of our control and does not validate orders in the way business wishes. Please keep this in mind.
+Configurable Ordering Country to Delivering Country Mapping:
+What countries can order what offer has been made configurable, so it can be changed, if needed, without the need for the application redeployment. 
 
+Dependency Injection and Separation of Concern:
+Application has been changed to make full use of Dependency Injection. This allowed the neat separation of concern. For example, the data access logic has been completely removed from the presentation layers and now the data access is provided via the dedicated components that can be injected into any consumer. This not only drew neat boundaries between the various concerns but also opened up the opportunity of automated testing.
 
-
-Spend as much time on this task as you wish, but we expect no more than an hour. Concentrate on what you find most important to show us from a design perspective and to get the application launched in time. Bring the rest to our discussion during the technical interview. 
-The deadline is one hour before our interview. Please share the code with us in any way you like. If you use an online platform, make sure you send us a link and make it publicly accessible.
+Magic String:
+Loose textual SQL queries have been completely removed and database querying is now done via the ORM (Entity Framework). This reduces chances of bugs, incorporates strong typing which gets better tooling support, increases maintainability and so on.
